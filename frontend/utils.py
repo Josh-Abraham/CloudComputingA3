@@ -3,7 +3,7 @@ from access_key import aws_config
 import boto3
 from botocore.config import Config
 ALLOWED_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.gif'}
-
+S3_BUCKET = "image-bucket-a3"
 my_config = Config(
     region_name = 'us-east-1',
     #signature_version = 'v4',
@@ -14,6 +14,8 @@ my_config = Config(
 )
 
 s3=boto3.client('s3', config=my_config, aws_access_key_id= aws_config['aws_access_key_id'], aws_secret_access_key= aws_config['aws_secret_access_key'])
+dynamodb = boto3.resource('dynamodb', aws_access_key_id= aws_config['aws_access_key_id'], aws_secret_access_key= aws_config['aws_secret_access_key'])
+image_store = dynamodb.Table('image_store')
 
 def upload_image(request, key):
     img_url = request.form.get('img_url')
@@ -27,7 +29,7 @@ def upload_image(request, key):
 
                 s3.put_object(Body=base64_image,Key=key,Bucket="image-bucket-a3",ContentType='image')
                 print("uploaded")
-                return "VALID"
+                return "OK"
             except:
                 return "INVALID"
             # return "SAVED"
@@ -39,42 +41,41 @@ def upload_image(request, key):
         if extension.lower() in ALLOWED_EXTENSIONS:
             filename = key + extension
             base64_image = base64.b64encode(response.content)
-            s3.put_object(Body=base64_image,Key=key,Bucket="image-bucket-a3",ContentType='image')
-            return "VALID"
-            # try:
-            #     return write_img_db(key, key)
-            # except:
-            #     return "INVALID"
+            s3.put_object(Body=base64_image,Key=key,Bucket=S3_BUCKET,ContentType='image')
+            return "OK"
     return "INVALID"
 
-# def write_img_db(image_key, image_tag):
-#     """ Write image to DB
+def download_image(key):
+    try:
+        return s3.get_object(Bucket=S3_BUCKET, Key=key)["Body"].read().decode('utf-8')
+    except:
+        return None
 
-#         Parameters:
-#             image_key (int): key value
-#             image_tag (str): file name
 
-#         Return:
-#             response (str): "OK" or "ERROR"
-#     """
-#     if image_key == "" or image_tag == "":
-#         error_msg="FAILURE"
-#         return error_msg
-#     try:
-#         cnx = get_db()
-#         cursor = cnx.cursor(buffered = True)
-#         query_exists = "SELECT EXISTS(SELECT 1 FROM image_table WHERE image_key = (%s))"
-#         cursor.execute(query_exists,(image_key,))
-#         for elem in cursor:
-#             if elem[0] == 1:
-#                 query_remove = '''DELETE FROM image_table WHERE image_key=%s'''
-#                 cursor.execute(query_remove,(image_key,))
-#                 break
+def write_dynamo(key, classification=None):
+    response = image_store.put_item(
+       Item={
+            'image_key': key,
+            'label': None,
+            'predicted_label': classification,
+        }
+    )
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        return "OK"
+    return "FAILURE"
 
-#         query_add = ''' INSERT INTO image_table (image_key,image_tag) VALUES (%s,%s)'''
-#         cursor.execute(query_add,(image_key,image_tag))
-#         cnx.commit()
-#         cnx.close()
-#         return "OK"
-#     except:
-#         return "FAILURE"
+
+def read_dynamo(key):
+    try:
+        if not key == "":
+            response = image_store.get_item(
+            Key={
+                    'image_key' : key,
+                }
+            )
+
+            if 'Item' in response:
+                return response['Item']
+        return None
+    except:
+        return None
