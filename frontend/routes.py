@@ -14,7 +14,7 @@ def add_key():
         status = upload_image(request, key)
         if status == "OK":
             # Call classification EC2 instance
-            classification = None
+            classification = "None"
             status = write_dynamo(key, classification)
         return render_template("add_image.html", save_status=status)
     return render_template("add_image.html")
@@ -33,7 +33,7 @@ def show_image():
             image = download_image(key)
             if not image == None:
                 prediction = resp['predicted_label']
-                if not prediction == None:
+                if not prediction == "None":
                     # Image and Prediction Found
                     return render_template("show_image.html", image=image, prediction=prediction)
                 # Image Found
@@ -41,3 +41,17 @@ def show_image():
         # No Key -> Returns Not Found 
         return render_template("show_image.html", status=404)
     return render_template("show_image.html")
+
+@image_routes.route('/show_category', methods = ['GET', 'POST'])
+def show_category():
+    """Show all images
+    GET: Simply render the show_image page
+    POST: Search for a given key
+    """
+    if request.method == 'POST':
+        category = request.form.get("submit")
+        images = read_category(category)
+        if len(images[0]) == 0:
+             return render_template("show_category.html", status=404)
+        return render_template("show_category.html", images=images)
+    return render_template("show_category.html")

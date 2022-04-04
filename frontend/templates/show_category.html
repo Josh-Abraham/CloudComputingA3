@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<head>
+    <title>ECE1779 Assignment Three</title>
+    <link rel="stylesheet" type="text/css" href='https://statis-store-a3.s3.amazonaws.com/core-style.css' />
+</head>
+<html>
+    <body>
+        {% include "sidebar.html" %}
+        <div>
+            <form
+                method="post"
+                enctype=multipart/form-data
+                >
+                <div class="modal" style="width:70vw; height: 80vh">
+                    <h1 class="form-title">Search for Image Key</h1>
+                    <div class="dropdown">
+                        <button class="dropbtn">Dropdown</button>
+                        <div class="dropdown-content">
+                          <input type="submit" id="dog" value="Dog" name="submit">
+                          <input type="submit" id="cat" value="Cat" name="submit">
+                        </div>
+                      </div>
+                    <div>
+                            {% if images is defined %}
+                                <div class="images">
+                                {% for image_row in images %}
+                                    <div class="div-row">
+                                    {% for image in image_row %}
+                                        <img src= "data:image/png;base64,{{ image }}" alt="IMAGE NOT FOUND" class="show-image" style="width: 25vw"/>
+                                    {% endfor %}
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if status is defined %} 
+                                {% if status == 404 %}
+                                <h4 style="text-align: center; color: rgb(172, 16, 16); font-style: italic;">No Images Within Category</h4>
+                                {% endif %}
+                            {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    <body>    
+</html>

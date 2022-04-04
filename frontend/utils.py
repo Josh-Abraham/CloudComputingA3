@@ -52,7 +52,7 @@ def download_image(key):
         return None
 
 
-def write_dynamo(key, classification=None):
+def write_dynamo(key, classification="None"):
     response = image_store.put_item(
        Item={
             'image_key': key,
@@ -77,5 +77,23 @@ def read_dynamo(key):
             if 'Item' in response:
                 return response['Item']
         return None
+    except:
+        return None
+
+def read_category(category):
+    try:
+        response = image_store.scan()
+        images = [[]]
+        i = 0
+        j = 0
+        for item in response['Items']:
+            if item['predicted_label'] == category:
+                images[i].append(download_image(item['image_key']))
+                j += 1
+                if j % 3 == 0:
+                    images.append([])
+                    i += 1
+                    j = 0
+        return images
     except:
         return None
