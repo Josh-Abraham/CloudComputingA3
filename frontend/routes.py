@@ -1,5 +1,7 @@
+from ipaddress import ip_address
 from flask import Blueprint, render_template, request
 from utils import *
+import json
 
 image_routes = Blueprint("image_routes", __name__)
 
@@ -9,12 +11,15 @@ def add_key():
     GET: Simply render the add_key page
     POST: Pass in key from form to add to DB and file system
     """
+    global EC2_RUN_IP
     if request.method == 'POST':
         key = request.form.get('key')
         status = upload_image(request, key)
         if status == "OK":
             # Call classification EC2 instance
-            classification = "None"
+            jsonReq = {'key': key}
+            classification_resp = requests.get('http://' + EC2_RUN_IP + ':5000/get_classification', json=jsonReq)
+            classification = json.loads(classification_resp.content.decode('utf-8'))
             status = write_dynamo(key, classification)
         return render_template("add_image.html", save_status=status)
     return render_template("add_image.html")
@@ -55,3 +60,5 @@ def show_category():
              return render_template("show_category.html", status=404)
         return render_template("show_category.html", images=images)
     return render_template("show_category.html")
+
+EC2_RUN_IP = get_ec2_ip()

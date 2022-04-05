@@ -4,6 +4,8 @@ import boto3
 from botocore.config import Config
 ALLOWED_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.gif'}
 S3_BUCKET = "image-bucket-a3"
+EC2_RUN_ID = "i-0a69fa48a7f17be89"
+
 my_config = Config(
     region_name = 'us-east-1',
     #signature_version = 'v4',
@@ -16,6 +18,7 @@ my_config = Config(
 s3=boto3.client('s3', config=my_config, aws_access_key_id= aws_config['aws_access_key_id'], aws_secret_access_key= aws_config['aws_secret_access_key'])
 dynamodb = boto3.resource('dynamodb', aws_access_key_id= aws_config['aws_access_key_id'], aws_secret_access_key= aws_config['aws_secret_access_key'])
 image_store = dynamodb.Table('image_store')
+ec2 = boto3.client('ec2', config=my_config, aws_access_key_id= aws_config['aws_access_key_id'], aws_secret_access_key= aws_config['aws_secret_access_key'])
 
 def upload_image(request, key):
     img_url = request.form.get('img_url')
@@ -97,3 +100,13 @@ def read_category(category):
         return images
     except:
         return None
+
+def get_ec2_ip():
+    global EC2_RUN_ID
+    response = ec2.describe_instances(InstanceIds=[EC2_RUN_ID], DryRun=False)
+    inst_name = response['Reservations'][0]['Instances'][0]['State']['Name']
+    ec2_ip = None       
+    if (inst_name == 'running'):
+        ec2_ip = response['Reservations'][0]['Instances'][0]['PublicIpAddress']
+    print(ec2_ip)
+    return ec2_ip
