@@ -61,6 +61,7 @@ def write_dynamo(key, classification="None"):
             'image_key': key,
             'label': None,
             'predicted_label': classification,
+            'trained': False
         }
     )
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
