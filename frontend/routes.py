@@ -17,9 +17,12 @@ def add_key():
         status = upload_image(request, key)
         if status == "OK":
             # Call classification EC2 instance
-            jsonReq = {'key': key}
-            classification_resp = requests.get('http://' + EC2_RUN_IP + ':5000/get_classification', json=jsonReq)
-            classification = json.loads(classification_resp.content.decode('utf-8'))
+            
+            classification = None
+            if not EC2_RUN_IP == None:
+                jsonReq = {'key': key}
+                classification_resp = requests.get('http://' + EC2_RUN_IP + ':5000/get_classification', json=jsonReq)
+                classification = json.loads(classification_resp.content.decode('utf-8'))
             status = write_dynamo(key, classification)
         return render_template("add_image.html", save_status=status)
     return render_template("add_image.html")
