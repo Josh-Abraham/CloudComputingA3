@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, redirect
 from routes import image_routes
 
 # Flask Blueprint Setup
@@ -11,3 +11,7 @@ def home():
     """ Main route, as well as default location for 404s
     """
     return render_template("home.html")
+
+@webapp.route('/manager_app')
+def manager_app():
+    return redirect("https://test-signup.auth.us-east-1.amazoncognito.com/login?response_type=code&client_id=270vq2m5ni8n4rrn4isp8tdl34&redirect_uri=https://9l4pka36ag.execute-api.us-east-1.amazonaws.com/dev")
