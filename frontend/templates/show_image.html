@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+    <title>ECE1779 Assignment Three</title>
+    <link rel="stylesheet" type="text/css" href='https://statis-store-a3.s3.amazonaws.com/core-style.css' />
+</head>
+<html>
+    <body>
+        {% include "sidebar.html" %}
+        <div>
+            <form
+                method="post"
+                enctype=multipart/form-data>
+                <div class="modal" style="width:50vw">
+                    <h1 class="form-title">Search for Image Key</h1>
+                    <div class="div-row">
+                        <input type="text" id="key" name="key" class="type-select" placeholder="Image Key"/>
+                        <input type="image" src="https://statis-store-a3.s3.amazonaws.com/search.svg" class="search-icon"/>
+                    </div>
+                    <div>
+                        <div class="image-wrapper">
+                            {% if image is defined %}
+                                
+                                {% if prediction is defined %}
+                                <h4 style="text-align: center; color: rgb(0, 0, 0); font-style: italic; margin: 0px;">Predicted Value: {{ prediction }}</h4>
+                                {% else %} 
+                                <h4 style="text-align: center; color: rgb(0, 0, 0); font-style: italic; margin: 0px;">No Predicted Value </h4>
+                                {% endif %}
+                                <img src= "data:image/png;base64,{{ image }}" alt="IMAGE NOT FOUND" class="show-image"/>
+                            {% endif %}
+                            {% if status is defined %} 
+                                {% if status == 404 %}
+                                <h4 style="text-align: center; color: rgb(172, 16, 16); font-style: italic;">No Image Matches Key</h4>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    <body>    
+</html>

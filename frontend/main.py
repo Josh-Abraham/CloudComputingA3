@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from classify_image import image_routes
+from routes import image_routes
 
 # Flask Blueprint Setup
 webapp = Flask(__name__)

@@ -12,10 +12,12 @@
                 method="post"
                 onsubmit="return validateForm()"
                 enctype=multipart/form-data>
-                <label for="key">Image Tag:</label>
-                <input type="text" id="key" name="key" class="type-select">
                 
-                <h1 class="form-title">Upload Image</h1><br>
+                <h1 class="form-title">Upload Image</h1>
+
+                <label for="key">Image Tag:</label>
+                <input type="text" id="key" name="key" class="type-select"><br/>
+
                 <div>
                     <input
                         class="radio-button"
@@ -36,27 +38,27 @@
                     <label for="upload">Upload File</label>
                 </div>
 
-                <div id="wrapper" style="height: 40px";>
+                <div id="wrapper" style="height: 40px; padding-top:10px">
                     <div id="img_url_wrapper" style=" visibility: visible; height:0px">
                         <input type="text" id="img_url" name="img_url" class="type-select">
                     </div>
-                    <div id="img_file_wrapper" style=" visibility: hidden; height:0px">
-                        <input type="file" id="img_file" accept="image/*" name="file" style=" margin-top:10px"/>
+                    <div id="img_file_wrapper" style=" visibility: hidden; height:0px;">
+                        <input type="file" id="img_file" class="submit-button" accept="image/*" name="file"/>
                     </div>
                 </div>
-
-                <input type="submit" id="submit" class="submit-button" value="Submit New Key-Image Pair">
-
-                <div>
-                    {% if save_status is defined %}
-                        {% if save_status == "OK" %}
-                            <h4 style="text-align: center; color: green">Image Successfully Added</h4>
-                        {% elif save_status == "FAILURE" %}
-                            <h4 style="text-align: center; color: rgb(172, 16, 16)">Database Failure - Image Not Added</h4>
-                        {% else %}
-                            <h4 style="text-align: center; color: rgb(172, 16, 16)">Invalid Image - Image Not Added</h4>
+                <div class="modal-inner-wrapper">
+                    <input type="submit" id="submit" class="submit-button" value="Submit New Key-Image Pair">
+                    <div>
+                        {% if save_status is defined %}
+                            {% if save_status == "OK" %}
+                                <h4 style="text-align: center; color: green">Image Successfully Added</h4>
+                            {% elif save_status == "FAILURE" %}
+                                <h4 style="text-align: center; color: rgb(172, 16, 16)">Database Failure - Image Not Added</h4>
+                            {% else %}
+                                <h4 style="text-align: center; color: rgb(172, 16, 16)">Invalid Image - Image Not Added</h4>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
+                    </div>
                 </div>
             </form>
         </div>
@@ -65,7 +67,8 @@
         <script>
             function validateForm() {
                 image_exists = document.getElementById("img_url").value !== "" || document.getElementById("img_file").value !== "";
-                return image_exists;
+                key_exists = document.getElementById("key").value !== "";
+                return image_exists && key_exists;
             }
 
             function showURL() {
