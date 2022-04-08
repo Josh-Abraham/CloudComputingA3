@@ -6,6 +6,6 @@
         "runtime": "python3.9",
         "s3_bucket": "zappa-frontend-flask",
         "aws_region": "us-east-1",
-        "apigateway_enabled": false
+        "apigateway_enabled": true
     }
 }
