@@ -34,6 +34,7 @@ def show_image():
     GET: Simply render the show_image page
     POST: Search for a given key
     """
+    message = "[frontendApp] [/show_image] "
     if request.method == 'POST':
         key = request.form.get('key')
         resp = read_dynamo(key)
@@ -45,6 +46,8 @@ def show_image():
                     # Image and Prediction Found
                     return render_template("show_image.html", image=image, prediction=prediction)
                 # Image Found
+                message += "[POST] key: " + key + " image found"
+                create_log(message)
                 return render_template("show_image.html", image=image)
         # No Key -> Returns Not Found 
         return render_template("show_image.html", status=404)
