@@ -29,7 +29,6 @@ def upload_image(request, key):
             try:
                 print("trying")
                 base64_image = base64.b64encode(file.read())
-
                 s3.put_object(Body=base64_image,Key=key,Bucket="image-bucket-a3",ContentType='image')
                 print("uploaded")
                 return "OK"
@@ -55,7 +54,7 @@ def download_image(key):
         return None
 
 
-def write_dynamo(key, classification="None"):
+def write_dynamo(key, classification):
     response = image_store.put_item(
        Item={
             'image_key': key,
@@ -99,6 +98,25 @@ def read_category(category):
                     i += 1
                     j = 0
         return images
+    except:
+        return None
+
+def read_all():
+    try:
+        response = image_store.scan()
+        image_list = []
+        i = 1
+        for item in response['Items']:
+            image_list.append(
+                {
+                    'index': i,
+                    'key': item['image_key'],
+                    'label': item['label'],
+                    'predicted_label': item['predicted_label']
+                })
+            i += 1
+           
+        return image_list
     except:
         return None
 
