@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, redirect
 from routes import image_routes
 
 # Flask Blueprint Setup
