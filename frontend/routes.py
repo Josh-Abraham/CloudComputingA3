@@ -12,6 +12,7 @@ def add_key():
     POST: Pass in key from form to add to DB and file system
     """
     global EC2_RUN_IP
+    EC2_RUN_IP = get_ec2_ip()
     if request.method == 'POST':
         key = request.form.get('key')
         status = upload_image(request, key)
