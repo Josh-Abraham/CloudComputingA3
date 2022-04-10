@@ -122,7 +122,9 @@ def read_all():
 
 def get_ec2_ip():
     global EC2_RUN_ID
+    
     response = ec2.describe_instances(InstanceIds=[EC2_RUN_ID], DryRun=False)
+    print(response)
     inst_name = response['Reservations'][0]['Instances'][0]['State']['Name']
     ec2_ip = None       
     if (inst_name == 'running'):

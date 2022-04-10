@@ -111,6 +111,7 @@ def thread_model_check():
             print('New Model')
             model = load_s3_model()
             MODEL_METRICS = data
+            old_key = MODEL_METRICS['key']
             
         time.sleep(60)
 
