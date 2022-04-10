@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request
 from utils import *
-import json
+import json, time
 
 image_routes = Blueprint("image_routes", __name__)
 
