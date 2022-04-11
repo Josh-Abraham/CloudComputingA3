@@ -21,9 +21,12 @@ def add_key():
             # Call classification EC2 instance
             if not EC2_RUN_IP == None:
                 jsonReq = {'key': key}
-                classification_resp = requests.get('http://' + EC2_RUN_IP + ':5000/get_classification', json=jsonReq)
-                classification = json.loads(classification_resp.content.decode('utf-8'))
-                print(classification)
+                try:
+                    classification_resp = requests.get('http://' + EC2_RUN_IP + ':5000/get_classification', json=jsonReq)
+                    classification = json.loads(classification_resp.content.decode('utf-8'))
+                    print(classification)
+                except:
+                    print("Flask not running")
             status = write_dynamo(key, classification)
         return render_template("add_image.html", save_status=status, classification=classification)
     return render_template("add_image.html")
