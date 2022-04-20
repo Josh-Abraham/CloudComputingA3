@@ -14,6 +14,7 @@ The manager application allows the system administrator the ability to view and 
 
 ### System Architecture
 ![system architecture](https://github.com/Josh-Abraham/CloudComputingA3/blob/main/design.png?raw=true)
+
 This system can be broken down by the various AWS components used, and their interactions are described in the above diagram. 
 Lambda Functions
 User Application: The main hosted application accessible via an API gateway
