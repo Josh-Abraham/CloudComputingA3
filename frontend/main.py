@@ -14,4 +14,4 @@ def home():
 
 @webapp.route('/manager_app')
 def manager_app():
-    return redirect("https://test-signup.auth.us-east-1.amazoncognito.com/login?response_type=code&client_id=270vq2m5ni8n4rrn4isp8tdl34&redirect_uri=https://9l4pka36ag.execute-api.us-east-1.amazonaws.com/dev")
+    return redirect("https://test-signup.auth.us-east-1.amazoncognito.com/login?response_type=code&client_id=270vq2m5ni8n4rrn4isp8tdl34&redirect_uri=https://jqifn5vnq8.execute-api.us-east-1.amazonaws.com/dev")
